@@ -55,18 +55,31 @@ So that I can evaluate the total amount in a currency
 - En échangeant sur ces exemples, vous pouvez découvrir des questions pour lesquelles personne autour de la table ne peut répondre : les écrire sur des post-it rouges et continuer la conversation. 
 
 ## Format de restitution
-(pour chaque US)
 
-### Titre de l'US (post-it jaunes)
+![](../img/example_mapping.jpg)
 
-> Question (post-it rouge)
+### Création d'un portefolio pouvant contenir différents type de monnaies
+
+> Que faire des arrondis si taux de change transitif ?
  
-#### Règle Métier (post-it bleu)
+#### Conversion dans la même devise
 
-Exemple: (post-it vert)
 ```
-5 USD + 10 EUR = 17 USD
+6 EUR + 7 EUR = 13 EUR
 ```
 
+#### Conversion dans une autre devise
 
+```
+Bank => USD -> EUR = 1.2
+10 EUR + 10 USD
 
+10 USD x 1.2 = 12 EUR
+12 EUR + 10 EUR = 22 EUR
+```
+
+### Conversion d'un portfolio vide
+
+```
+0 = 0 dans toutes les devises
+```
