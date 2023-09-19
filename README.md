@@ -4,6 +4,7 @@ Groupe composé de :
     - GONZALEZ Antoine
     - LEBEZ Quentin
     - MONGEOT Quentin
+    - NOEL Enzo
 
 
 Langage choisi : TypeScript
