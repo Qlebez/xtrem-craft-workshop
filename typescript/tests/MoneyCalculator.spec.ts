@@ -20,4 +20,15 @@ describe('Money', function () {
     const money_divison = MoneyCalculator.Divide(4002, Currency.KRW, 4)
     expect(1000.5, ).toBe(money_divison)
   })
+
+  test('test to see if operation work', () => {
+    const money_add = MoneyCalculator.Add(5, Currency.EUR, 10)
+    expect(money_add).toBe(15)
+
+    const money_multiply = MoneyCalculator.Times(10, Currency.EUR, 2)
+    expect(money_multiply).toBe(20)
+
+    const money_divison = MoneyCalculator.Divide(400, Currency.KRW, 4)
+    expect(money_divison).toBe(100)
+  })
 })

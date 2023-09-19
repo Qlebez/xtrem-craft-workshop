@@ -1,6 +1,7 @@
 import { Currency } from '../src/Currency'
 import { Bank } from '../src/Bank'
 import { MissingExchangeRateError } from '../src/MissingExchangeRateError'
+import exp from 'constants'
 
 describe('Bank', function () {
 
@@ -34,5 +35,15 @@ describe('Bank', function () {
     const money2 = bank.convert(10, Currency.EUR, Currency.USD)
 
     expect(money2).toBeGreaterThan(money)
+  })
+
+  test('test the separator of the error message', () => {
+    const bank = Bank.withExchangeRate(Currency.EUR, Currency.USD, 1.2)
+    const money = () => bank.convert(10, Currency.EUR, Currency.KRW)
+
+    expect(money)
+      .toThrow(MissingExchangeRateError)
+    expect(money)
+      .toThrow('EUR-> KRW')
   })
 })
