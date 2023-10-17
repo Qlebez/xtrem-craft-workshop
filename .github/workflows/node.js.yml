@@ -9,14 +9,12 @@ on:
   pull_request:
     branches: [ "master" ]
 
-defaults:
-  run:
-    working-directory: ./typescript
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./typescript
 
     strategy:
       matrix:
