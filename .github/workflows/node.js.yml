@@ -40,3 +40,6 @@ jobs:
 
     - name: Run tests
       run: npm test
+
+    - name: Stryker run
+      run: stryker run
