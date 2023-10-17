@@ -33,6 +33,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        working-directory: ./typescript
   
     - name: Install dependencies
       run: npm ci
