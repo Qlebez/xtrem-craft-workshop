@@ -48,4 +48,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage
-        path: ./typescript/coverage
+        path: ./typescript/reports/mutation/mutation.html
