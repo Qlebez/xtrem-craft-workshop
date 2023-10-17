@@ -11,6 +11,10 @@ class Money {
   }
   
   add(money: Money) {
+    if (this._currency !== money._currency) {
+      throw new Error('Currencies are different');
+    }
+    
     return new Money(this._amount + money._amount, this._currency);
   }
 }
@@ -46,10 +50,17 @@ describe('Money', function () {
     expect(money_divison).toBe(100)
   })
 
-  test('should add money', () => {
+  test('should add money when currency are the same', () => {
     const money: Money = new Money(5, Currency.USD);
     const sum = money.add(new Money(10, Currency.USD));
 
     expect(sum).toEqual(new Money(15, Currency.USD));
+  })
+
+  test('should not add money when currency are different', () => {
+    const money: Money = new Money(5, Currency.USD);
+    const sum = () =>  money.add(new Money(10, Currency.EUR));
+
+    expect(sum).toThrow();
   })
 })
