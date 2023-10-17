@@ -17,6 +17,14 @@ class Money {
     
     return new Money(this._amount + money._amount, this._currency);
   }
+
+  multiply(money: Money) {
+    if (this._currency !== money._currency) {
+      throw new Error('Currencies are different');
+    }
+    
+    return new Money(this._amount * money._amount, this._currency);
+  }
 }
 
 describe('Money', function () {
@@ -62,5 +70,12 @@ describe('Money', function () {
     const sum = () =>  money.add(new Money(10, Currency.EUR));
 
     expect(sum).toThrow();
+  })
+
+  test('should multiply money when currency are the same', () => {
+    const money: Money = new Money(5, Currency.EUR);
+    const sum = money.multiply(new Money(10, Currency.EUR));
+
+    expect(sum).toEqual(new Money(50, Currency.EUR));
   })
 })
