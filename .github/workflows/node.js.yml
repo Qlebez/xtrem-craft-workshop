@@ -41,8 +41,5 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Stryker install
-      run: npm install stryker-cli
-
     - name: Stryker run
-      run: stryker run
+      run: npm install stryker-cli && stryker run
