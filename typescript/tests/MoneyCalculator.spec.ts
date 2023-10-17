@@ -1,6 +1,20 @@
 import { Currency } from '../src/Currency'
 import { MoneyCalculator } from '../src/MoneyCalculator'
 
+class Money {
+  private _amount: number;
+  private _currency: Currency;
+  
+  constructor(amount: number, currency: Currency) {
+    this._amount = amount;
+    this._currency = currency;
+  }
+  
+  add(money: Money) {
+    return new Money(this._amount + money._amount, this._currency);
+  }
+}
+
 describe('Money', function () {
   test('add in usd returns number', () => {
     const money_add = MoneyCalculator.Add(5, Currency.USD, 10)
@@ -30,5 +44,12 @@ describe('Money', function () {
 
     const money_divison = MoneyCalculator.Divide(400, Currency.KRW, 4)
     expect(money_divison).toBe(100)
+  })
+
+  test('should add money', () => {
+    const money: Money = new Money(5, Currency.USD);
+    const sum = money.add(new Money(10, Currency.USD));
+
+    expect(sum).toEqual(new Money(15, Currency.USD));
   })
 })
