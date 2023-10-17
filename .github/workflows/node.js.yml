@@ -43,3 +43,9 @@ jobs:
 
     - name: Stryker run
       run: npm install -g stryker-cli && stryker run
+
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: ./typescript/coverage
