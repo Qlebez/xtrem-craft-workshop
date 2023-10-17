@@ -33,7 +33,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        working-directory: ./typescript
+        cache-dependency-path: './typescript/package-lock.json'
   
     - name: Install dependencies
       run: npm ci
