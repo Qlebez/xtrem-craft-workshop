@@ -1,29 +1,44 @@
 import { Currency } from '../src/Currency'
 import { MoneyCalculator } from '../src/MoneyCalculator'
+import { DivisionByZeroError } from '../src/DivisionByZeroError';
+import { NegativeAmountError } from '../src/NegativeAmountError';
+import { DifferentCurrenciesError } from '../src/DifferentCurrenciesError';
 
 class Money {
   private _amount: number;
   private _currency: Currency;
   
-  constructor(amount: number, currency: Currency) {
+  private constructor(amount: number, currency: Currency) {
     this._amount = amount;
     this._currency = currency;
+  }
+
+  static create(amount: number, currency: Currency) {
+    if (amount < 0) {
+      throw new NegativeAmountError(amount);
+    }
+
+    return new Money(amount, currency);
   }
   
   add(money: Money) {
     if (this._currency !== money._currency) {
-      throw new Error('Currencies are different');
+      throw new DifferentCurrenciesError(this._currency, money._currency);
     }
     
-    return new Money(this._amount + money._amount, this._currency);
+    return Money.create(this._amount + money._amount, this._currency);
   }
 
-  multiply(money: Money) {
-    if (this._currency !== money._currency) {
-      throw new Error('Currencies are different');
+  multiply(multiplier: number) {
+    return Money.create(this._amount * multiplier, this._currency);
+  }
+
+  divide(divisor: number) {
+    if (divisor === 0) {
+      { throw new DivisionByZeroError() }
     }
-    
-    return new Money(this._amount * money._amount, this._currency);
+
+    return Money.create(this._amount / divisor, this._currency);
   }
 }
 
@@ -58,24 +73,59 @@ describe('Money', function () {
     expect(money_divison).toBe(100)
   })
 
-  test('should add money when currency are the same', () => {
-    const money: Money = new Money(5, Currency.USD);
-    const sum = money.add(new Money(10, Currency.USD));
+// ------------------------------------ Money ------------------------------------
 
-    expect(sum).toEqual(new Money(15, Currency.USD));
+  test('should add money when currency are the same', () => {
+    const money: Money = Money.create(5, Currency.USD);
+    const sum = money.add(Money.create(10, Currency.USD));
+
+    expect(sum).toEqual(Money.create(15, Currency.USD));
   })
 
   test('should not add money when currency are different', () => {
-    const money: Money = new Money(5, Currency.USD);
-    const sum = () =>  money.add(new Money(10, Currency.EUR));
+    const money: Money = Money.create(5, Currency.USD);
+    const sum = () =>  money.add(Money.create(10, Currency.EUR));
 
-    expect(sum).toThrow();
+    expect(sum).toThrow(DifferentCurrenciesError);
   })
 
-  test('should multiply money when currency are the same', () => {
-    const money: Money = new Money(5, Currency.EUR);
-    const sum = money.multiply(new Money(10, Currency.EUR));
+  test('should multiply money', () => {
+    const money: Money = Money.create(5, Currency.EUR);
+    const sum = money.multiply(10);
 
-    expect(sum).toEqual(new Money(50, Currency.EUR));
+    expect(sum).toEqual(Money.create(50, Currency.EUR));
+  })
+
+  test('should not multiply by negative number if the amount is negative', () => {
+    const money: Money = Money.create(5, Currency.EUR);
+    const sum = () => money.multiply(-10);
+
+    expect(sum).toThrow(NegativeAmountError);
+  })
+
+  test('should divide money', () => {
+    const money: Money = Money.create(1000, Currency.EUR);
+    const sum = money.divide(4);
+
+    expect(sum).toEqual(Money.create(250, Currency.EUR));
+  })
+
+  test('should not divide money by 0', () => {
+    const money: Money = Money.create(1000, Currency.EUR);
+    const sum = () => money.divide(0);
+
+    expect(sum).toThrow(DivisionByZeroError);
+  })
+
+  test('should not divide money by negative divisor if the amount is negative', () => {
+    const money: Money = Money.create(10, Currency.EUR);
+    const sum = () => money.divide(-10);
+
+    expect(sum).toThrow(NegativeAmountError);
+  })
+
+  test('test create money', () => {
+    const money: Money = Money.create(10, Currency.EUR);
+    expect(money).not.toBeNull()
   })
 })
