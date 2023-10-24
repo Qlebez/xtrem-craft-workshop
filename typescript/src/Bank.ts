@@ -1,4 +1,5 @@
 import { Currency } from './Currency'
+import { Money } from './Money'
 import { MissingExchangeRateError } from './MissingExchangeRateError'
 
 export class Bank {
@@ -25,23 +26,29 @@ export class Bank {
   }
 
   /**
-   * @param firstCurrency : Currency;
+   * @param money : money;
    * @param secondCurrency : Currency;
    */
-  canConvert (firstCurrency: Currency, secondCurrency: Currency): boolean {
-    return firstCurrency === secondCurrency || this._exchangeRates.has(firstCurrency + '->' + secondCurrency)
+  canConvert(money: Money, currency2: Currency) {
+    return money.hasCurrency(currency2) || this._exchangeRates.has(this.getExchangeRate(money, currency2))
   }
 
   /**
-   * @param amount : number;
-   * @param currency1 : Currency;
-   * @param currency2 : Currency;
+   * @param money : Money;
+   * @param to : Currency;
+   * @returns Money;
    */
-  convert (amount: number, currency1: Currency, currency2: Currency): number {
-    if (!this.canConvert(currency1, currency2)) { throw new MissingExchangeRateError(currency1, currency2) }
+  convertMoney(money: Money, to: Currency): Money {
+    if (!this.canConvert(money, to)) {
+      throw new MissingExchangeRateError(money._currency, to)
+    }
 
-    return currency2 === currency1
-      ? amount
-      : amount * this._exchangeRates.get(currency1 + '->' + currency2)
+    return money.hasCurrency(to)
+      ? money
+      : money.convert(this._exchangeRates.get(this.getExchangeRate(money, to)), to)
+  }
+
+  private getExchangeRate(money: Money, currency2: Currency): string {
+    return money._currency + '->' + currency2
   }
 }

@@ -16,7 +16,7 @@
 ## Invariants
 
 - Division par 0 impossible
-- Impossible d'ajouter des money de devises différentes
+- Additionner des money uniquement de la même devise
 - Money ne peut pas être négatif
 
 ## Collaborators

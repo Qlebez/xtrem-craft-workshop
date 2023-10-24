@@ -1,46 +1,9 @@
+import { Money } from '../src/Money'
 import { Currency } from '../src/Currency'
 import { MoneyCalculator } from '../src/MoneyCalculator'
 import { DivisionByZeroError } from '../src/DivisionByZeroError';
 import { NegativeAmountError } from '../src/NegativeAmountError';
 import { DifferentCurrenciesError } from '../src/DifferentCurrenciesError';
-
-class Money {
-  private _amount: number;
-  private _currency: Currency;
-  
-  private constructor(amount: number, currency: Currency) {
-    this._amount = amount;
-    this._currency = currency;
-  }
-
-  static create(amount: number, currency: Currency) {
-    if (amount < 0) {
-      throw new NegativeAmountError(amount);
-    }
-
-    return new Money(amount, currency);
-  }
-  
-  add(money: Money) {
-    if (this._currency !== money._currency) {
-      throw new DifferentCurrenciesError(this._currency, money._currency);
-    }
-    
-    return Money.create(this._amount + money._amount, this._currency);
-  }
-
-  multiply(multiplier: number) {
-    return Money.create(this._amount * multiplier, this._currency);
-  }
-
-  divide(divisor: number) {
-    if (divisor === 0) {
-      { throw new DivisionByZeroError() }
-    }
-
-    return Money.create(this._amount / divisor, this._currency);
-  }
-}
 
 describe('Money', function () {
   test('add in usd returns number', () => {

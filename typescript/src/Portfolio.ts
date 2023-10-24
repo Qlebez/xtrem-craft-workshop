@@ -1,28 +1,21 @@
-import { Currency } from "../src/Currency";
 import { Bank } from "../src/Bank";
+import { Money } from "./Money";
+import { Currency } from "../src/Currency";
 
 export class Portfolio {
-       
-    private readonly _amounts: Map<Currency, number> = new Map()
-
-    evaluate(currency: Currency, bank: Bank): number {
-        if (this._amounts.size === 0) { return 0; }
-
-        let total: number = 0;
-
-        this._amounts.forEach((currency_iter, number) => {
-        
-            total += bank.convert(currency_iter, number, currency);
-        })
-
-        return total;
+    private readonly moneys: Money[] = []
+    
+    private addMoneyReducer(bank: Bank, currency: Currency): (previousValue: Money, currentValue: Money, currentIndex: number, array: Money[]) => Money {
+        return (sum: Money, money: Money) => {
+            return sum.add(bank.convertMoney(money, currency));
+        };
     }
 
-    addAmount(amount: number, currency: Currency) {
-        if (this._amounts.has(currency)) {
-            amount += this._amounts.get(currency);
-        }
-        
-        this._amounts.set(currency, amount)
+    evaluateMoney(currency: Currency, bank: Bank): Money {
+        return this.moneys.reduce(this.addMoneyReducer(bank, currency), Money.create(0, Currency.EUR))
+    }
+
+    addMoney(money: Money) {
+        this.moneys.push(money);
     }
 }
