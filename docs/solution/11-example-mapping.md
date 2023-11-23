@@ -17,6 +17,8 @@ Exemple: (post-it vert)
 
 Vous pouvez également joindre une photo du résultat obtenu en utilisant les post-its.
 
+![](../img/exampleMapping.png)
+
 ## Story 1: Define Pivot Currency
 
 ```gherkin
