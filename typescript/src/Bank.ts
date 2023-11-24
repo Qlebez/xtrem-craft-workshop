@@ -1,54 +1,49 @@
-import { Currency } from './Currency'
 import { Money } from './Money'
+import { Currency } from './Currency'
 import { MissingExchangeRateError } from './MissingExchangeRateError'
 
 export class Bank {
   private readonly _exchangeRates: Map<string, number> = new Map()
+  private readonly _pivotCurrency: Currency
 
   /**
-   * @param currency1 : Currency;
-   * @param currency2 : Currency;
-   * @param rate : number;
+   * @param currency : Currency
+   * @param rate :  number
    */
-  static withExchangeRate (currency1: Currency, currency2: Currency, rate: number): Bank {
-    const bank = new Bank()
-    bank.addExchangeRate(currency1, currency2, rate)
-    return bank
+  addExchangeRate (currency: Currency, rate: number): void {
+    this._exchangeRates.set(currency, rate)
   }
 
   /**
-   * @param currency1 : Currency;
-   * @param currency2 : Currency;
-   * @param rate :  number;
-   */
-  addExchangeRate (currency1: Currency, currency2: Currency, rate: number): void {
-    this._exchangeRates.set(currency1 + '->' + currency2, rate)
+  * @param money : Money
+  * @param to : Currency
+  */
+  canConvert (money: Money, to: Currency): boolean {
+    return money.hasCurrency(to) || this._exchangeRates.has(to)
   }
 
   /**
-   * @param money : money;
-   * @param secondCurrency : Currency;
+   * @param money : Money
+   * @param to : Currency
+   * @returns Money
    */
-  canConvert(money: Money, currency2: Currency) {
-    return money.hasCurrency(currency2) || this._exchangeRates.has(this.getExchangeRate(money, currency2))
+  convertMoney (money: Money, to: Currency): Money {
+    if (this.canConvert(money, to)) {
+      return money.hasCurrency(to)
+        ? money
+        : money.convert(this._exchangeRates.get(to), to)
+    }
+    throw new MissingExchangeRateError(money._currency, to)
   }
 
   /**
-   * @param money : Money;
-   * @param to : Currency;
-   * @returns Money;
-   */
-  convertMoney(money: Money, to: Currency): Money {
-    if (!this.canConvert(money, to)) {
-      throw new MissingExchangeRateError(money._currency, to)
+  * @param pivotCurrency : Currency
+  */
+  constructor (pivotCurrency: Currency) {
+    if (pivotCurrency == null) {
+      throw new Error('Pivot currency is mandatory')
     }
 
-    return money.hasCurrency(to)
-      ? money
-      : money.convert(this._exchangeRates.get(this.getExchangeRate(money, to)), to)
-  }
-
-  private getExchangeRate(money: Money, currency2: Currency): string {
-    return money._currency + '->' + currency2
+    this._pivotCurrency = pivotCurrency
   }
 }
